@@ -10,6 +10,7 @@ A Flask-based webhook listener application that captures GitHub events and store
 
 
 # 📁 Project Structure
+```
 .
 ├── app.py               # Main Flask app
 ├── db.py                # MongoDB connection + DB helper functions
@@ -21,6 +22,7 @@ A Flask-based webhook listener application that captures GitHub events and store
 ├── .gitignore
 ├── requirements.txt
 └── README.md
+```
 
 ## 🚀 Getting Started
 ```bash
