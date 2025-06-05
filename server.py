@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify, render_template
 from models import insert_event, get_latest_events
-from datetime import datetime, timezone
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
 
 app = Flask(__name__)
 
@@ -16,8 +18,7 @@ def webhook():
     print(f"Received event type: {event_type}")
     print(f"Payload: {payload}")
 
-    # Get current UTC time as both datetime object and ISO 8601 string
-    timestamp = datetime.now(timezone.utc)
+    timestamp = datetime.now(ZoneInfo("Asia/Kolkata"))
     iso_timestamp = timestamp.isoformat()
 
     if event_type == 'push':
