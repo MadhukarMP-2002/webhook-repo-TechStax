@@ -1,8 +1,7 @@
 from flask import Flask, request, jsonify, render_template
 from models import insert_event, get_latest_events
 from datetime import datetime
-from zoneinfo import ZoneInfo
-
+from zoneinfo import ZoneInfo  # Ensure you're using Python 3.9+
 
 app = Flask(__name__)
 
@@ -15,8 +14,8 @@ def webhook():
     event_type = request.headers.get('X-GitHub-Event')
     payload = request.json
 
-    print(f"Received event type: {event_type}")
-    print(f"Payload: {payload}")
+    # print(f"Received event type: {event_type}")
+    # print(f"Payload: {payload}")
 
     timestamp = datetime.now(ZoneInfo("Asia/Kolkata"))
     iso_timestamp = timestamp.isoformat()
@@ -36,7 +35,7 @@ def webhook():
         label_names = [label['name'] for label in labels]
         label_text = f" with labels [{', '.join(label_names)}]" if label_names else ""
 
-        if pr['merged']:
+        if pr.get('merged'):
             msg = f'"{author}" merged branch "{from_branch}" to "{to_branch}"{label_text}'
             etype = 'merge'
         else:

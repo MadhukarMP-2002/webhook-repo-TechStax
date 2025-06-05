@@ -18,15 +18,19 @@ function getColor(type) {
 
 function fetchEvents() {
   $.get('/events', function (data) {
+    console.log("Events data received:", data);
+
     const $list = $('#event-list');
     $list.empty();
 
-    if (data.length === 0) {
+    if (!data || data.length === 0) {
       $list.append('<li class="text-center text-gray-500">No events yet.</li>');
       return;
     }
 
     data.forEach(event => {
+      console.log("Event:", event);
+
       const icon = getIcon(event.type);
       const colorClass = getColor(event.type);
 
@@ -47,6 +51,8 @@ function fetchEvents() {
 
       $list.append(html);
     });
+  }).fail(() => {
+    console.error("Failed to fetch events");
   });
 }
 
@@ -55,8 +61,11 @@ function formatTime(iso) {
   const date = new Date(iso);
   if (isNaN(date.getTime())) return '';
   return date.toLocaleString('en-US', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
     timeZoneName: 'short'
   });
 }
