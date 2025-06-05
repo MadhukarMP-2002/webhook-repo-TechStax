@@ -55,4 +55,4 @@ def events():
     return jsonify(get_latest_events())
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(port=3000)
