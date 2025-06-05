@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, render_template
 from models import insert_event, get_latest_events
-from datetime import datetime
+from datetime import datetime, timezone
 
 app = Flask(__name__)
 
@@ -10,20 +10,21 @@ def home():
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    event_type = request.headers.get('X-GitHub-Event')  # 💡 define it first
+    event_type = request.headers.get('X-GitHub-Event')
     payload = request.json
 
     print(f"Received event type: {event_type}")
     print(f"Payload: {payload}")
 
-    from datetime import datetime, timezone
-    timestamp = datetime.now(timezone.utc).strftime('%d %B %Y - %I:%M %p UTC')
+    # Get current UTC time as both datetime object and ISO 8601 string
+    timestamp = datetime.now(timezone.utc)
+    iso_timestamp = timestamp.isoformat()
 
     if event_type == 'push':
         author = payload['pusher']['name']
         branch = payload['ref'].split('/')[-1]
-        msg = f'"{author}" pushed to "{branch}" on {timestamp}'
-        insert_event({'type': 'push', 'message': msg, 'timestamp': datetime.now(timezone.utc)})
+        msg = f'"{author}" pushed to "{branch}"'
+        insert_event({'type': 'push', 'message': msg, 'timestamp': iso_timestamp})
 
     elif event_type == 'pull_request':
         pr = payload['pull_request']
@@ -35,13 +36,13 @@ def webhook():
         label_text = f" with labels [{', '.join(label_names)}]" if label_names else ""
 
         if pr['merged']:
-            msg = f'"{author}" merged branch "{from_branch}" to "{to_branch}" on {timestamp}{label_text}'
+            msg = f'"{author}" merged branch "{from_branch}" to "{to_branch}"{label_text}'
             etype = 'merge'
         else:
-            msg = f'"{author}" submitted a pull request from "{from_branch}" to "{to_branch}" on {timestamp}{label_text}'
+            msg = f'"{author}" submitted a pull request from "{from_branch}" to "{to_branch}"{label_text}'
             etype = 'pull_request'
 
-        insert_event({'type': etype, 'message': msg, 'timestamp': datetime.now(timezone.utc)})
+        insert_event({'type': etype, 'message': msg, 'timestamp': iso_timestamp, 'labels': label_names})
 
     else:
         print("Unhandled or missing event type.")

@@ -1,13 +1,43 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>GitHub Events</title>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-</head>
-<body>
-  <h2>Latest GitHub Events</h2>
-  <ul id="event-list"></ul>
+  <meta charset="UTF-8" />
+  <title>GitHub Event Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <script src="/static/main.js"></script>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            githubGray: '#f6f8fa',
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="bg-githubGray min-h-screen text-gray-800 font-sans p-4">
+
+  <div class="max-w-4xl mx-auto">
+    <div class="text-center mb-6">
+      <h1 class="text-3xl font-extrabold">🚀 GitHub Event Dashboard</h1>
+      <p class="text-gray-600 mt-1">Track latest GitHub push, PR & merge events</p>
+    </div>
+
+    <ul id="event-list" class="space-y-5">
+      <!-- Events will be rendered here -->
+    </ul>
+  </div>
+
+  <script src="{{ url_for('static', filename='main.js') }}"></script>
 </body>
 </html>
